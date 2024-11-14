@@ -1,4 +1,4 @@
-const Table = require('cli-table3');
+const Table = require("cli-table3");
 
 class MahasiswaView {
   static showMenu(rl, callback) {
@@ -16,49 +16,82 @@ class MahasiswaView {
 
   static showList(mahasiswaList) {
     const table = new Table({
-      head: ['NIM', 'Nama', 'Tanggal Lahir', 'Alamat', 'Kode Jurusan', 'Nama Jurusan']
+      head: [
+        "NIM",
+        "Nama",
+        "Tanggal Lahir",
+        "Alamat",
+        "Kode Jurusan",
+        "Nama Jurusan"
+      ]
     });
 
-    mahasiswaList.forEach(row => {
+    mahasiswaList.forEach((row) => {
       table.push([
         row.nim,
         row.nama,
         row.tanggal_lahir,
         row.alamat,
         row.id_jurusan,
-        row.nama_jurusan || 'Belum ada jurusan'
+        row.nama_jurusan || "Belum ada jurusan"
       ]);
     });
 
     console.log(table.toString());
   }
 
-  static showDetail(mahasiswa) {
+  static showDetail(mahasiswa, nim) {
     if (!mahasiswa) {
-      console.log("Mahasiswa tidak ditemukan");
+      console.log(`Mahasiswa dengan NIM '${nim}', tidak terdaftar`);
       return;
     }
 
     console.log("========================================");
-    console.log(`Detail Mahasiswa dengan NIM ${mahasiswa.nim}`);
+    console.log(`Detail Mahasiswa dengan NIM '${mahasiswa.nim}':`);
     console.log(`1. NIM                 = ${mahasiswa.nim}`);
     console.log(`2. Nama                = ${mahasiswa.nama}`);
-    console.log(`3. Tanggal_lahir       = ${mahasiswa.tanggal_lahir}`);
-    console.log(`4. Alamat              = ${mahasiswa.alamat}`);
-    console.log(`5. Kode Jurusan        = ${mahasiswa.id_jurusan}`);
-    console.log(`6. Nama Jurusan        = ${mahasiswa.nama_jurusan || 'Belum ada jurusan'}`);
+    console.log(`3. Alamat              = ${mahasiswa.alamat}`);
+    console.log(`4. Kode Jurusan        = ${mahasiswa.id_jurusan}`);
   }
 
   static showSearchPrompt(rl, callback) {
     rl.question("Masukkan NIM mahasiswa: ", callback);
   }
 
-  static showAddForm(rl, callback) {
-    console.log("Input Data Mahasiswa:");
-    rl.question("NIM: ", (nim) => {
-      rl.question("Nama: ", (nama) => {
-        rl.question("Tanggal Lahir (YYYY-MM-DD): ", (tanggal_lahir) => {
-          rl.question("Alamat: ", (alamat) => {
+  static showAddForm(rl, callback, mahasiswaList) {
+    console.log("Lengkapi data di bawah ini:");
+
+    // Tampilkan tabel mahasiswa yang sudah ada
+    const table = new Table({
+      head: [
+        "NIM",
+        "Nama",
+        "Tanggal Lahir",
+        "Alamat",
+        "Kode Jurusan",
+        "Nama Jurusan"
+      ]
+    });
+
+    mahasiswaList.forEach((row) => {
+      table.push([
+        row.nim,
+        row.nama,
+        row.tanggal_lahir,
+        row.alamat,
+        row.id_jurusan,
+        row.nama_jurusan || "Belum ada jurusan"
+      ]);
+    });
+
+    console.log("\nDaftar Mahasiswa yang sudah terdaftar:");
+    console.log(table.toString());
+    console.log("\n");
+
+    rl.question("Masukkan NIM: ", (nim) => {
+      rl.question("Masukkan Nama: ", (nama) => {
+        rl.question("Masukkan Tanggal Lahir (YYYY-MM-DD): ", (tanggal_lahir) => {
+          rl.question("Masukkan Alamat: ", (alamat) => {
             callback({
               nim,
               nama,
@@ -73,10 +106,10 @@ class MahasiswaView {
 
   static showJurusanList(jurusanList) {
     const table = new Table({
-      head: ['Kode Jurusan', 'Nama Jurusan']
+      head: ["Kode Jurusan", "Nama Jurusan"]
     });
 
-    jurusanList.forEach(jurusan => {
+    jurusanList.forEach((jurusan) => {
       table.push([jurusan.id_jurusan, jurusan.nama_jurusan]);
     });
 

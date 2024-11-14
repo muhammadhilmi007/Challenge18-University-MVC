@@ -16,47 +16,7 @@ class DosenView {
 
   static showDosenList(dosenList) {
     const table = new Table({
-      head: ["NIP", "Nama Dosen"],
-    });
-
-    dosenList.forEach(row => {
-      table.push([row.nip, row.nama_dosen]);
-    });
-
-    console.log(table.toString());
-  }
-
-  static showDetailDosen(dosen) {
-    if (!dosen) {
-      console.log(`Dosen dengan NIP ${dosen.nip} tidak ditemukan`);
-    } else {
-      console.log("======================================");
-      console.log(`Detail Dosen dengan NIP ${dosen.nip}`);
-      console.log(`NIP: ${dosen.nip}`);
-      console.log(`Nama: ${dosen.nama_dosen}`);
-    }
-    this.show();
-  }
-
-  static showSearchDosen(rl, callback) {
-    rl.question("Masukkan NIP dosen: ", callback);
-  }
-
-  static showTambahDosen(rl, callback) {
-    console.log("Input Data Dosen: ");
-    rl.question("NIP: ", (nip) => {
-      rl.question("Nama Dosen: ", (nama_dosen) => {
-        callback({
-          nip,
-          nama_dosen,
-        });
-      });
-    });
-  }
-
-  static showDosenDaftar(dosenList) {
-    const table = new Table({
-      head: ["NIP", "Nama Dosen"],
+      head: ["NIP", "Nama Dosen"]
     });
 
     dosenList.forEach((row) => {
@@ -64,15 +24,61 @@ class DosenView {
     });
 
     console.log(table.toString());
-    this.show();
+  }
+
+  static showDetailDosen(dosen, nip) {
+    if (!dosen) {
+      console.log(`Dosen dengan NIP ${nip} tidak ditemukan`);
+      return;
+    }
+    console.log("======================================");
+    console.log(`Detail Dosen dengan NIP ${dosen.nip}`);
+    console.log(`NIP: ${dosen.nip}`);
+    console.log(`Nama: ${dosen.nama_dosen}`);
+  }
+
+  static showSearchDosen(rl, callback) {
+    rl.question("Masukkan NIP dosen: ", callback);
+  }
+
+  static showTambahDosen(rl, callback, dosenList) {
+    console.log("Lengkapi data dibawah ini:");
+
+    // Tampilkan daftar dosen yang sudah terdaftar
+    this.showDosenDaftar(dosenList);
+
+
+    rl.question("Masukkan NIP Dosen: ", (nip) => {
+      rl.question("Masukkan Nama Dosen: ", (nama_dosen) => {
+        callback({
+          nip,
+          nama_dosen
+        });
+      });
+    });
+  }
+
+  static showDosenDaftar(dosenList) {
+    const table = new Table({
+      head: ["NIP", "Nama Dosen"]
+    });
+
+    dosenList.forEach(row => {
+      table.push([row.nip, row.nama_dosen]);
+    });
+
+    console.log("\n");
+    console.log("Daftar Dosen yang sudah terdaftar:");
+    console.log(table.toString());
+    console.log("\n");
   }
 
   static showDosenPrompt(rl, callback) {
-    rl.question("NIP: ", callback);
+    rl.question("Masukkan NIP Dosen: ", callback);
   }
 
   static showDeletePrompt(rl, callback) {
-    rl.question("Masukkan NIP dosen: ", callback);
+    rl.question("Masukkan NIP Dosen: ", callback);
   }
 }
 

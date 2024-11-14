@@ -34,9 +34,9 @@ class KontrakView {
     console.log(table.toString());
   }
 
-  static showDetail(kontrakList) {
+  static showDetail(kontrakList, nim) {
     if (kontrakList.length === 0) {
-      console.log("Tidak ada kontrak untuk mahasiswa tersebut");
+      console.log(`Tidak ada kontrak untuk mahasiswa dengan NIM ${nim} tersebut`);
       return;
     }
 
@@ -65,7 +65,6 @@ class KontrakView {
   }
 
   static showAddForm(rl, callback) {
-    console.log("\nInput Data Kontrak Baru:");
     rl.question("Masukkan NIM Mahasiswa: ", callback);
   }
 
@@ -107,10 +106,33 @@ class KontrakView {
     rl.question("Masukkan ID Kontrak yang akan dihapus: ", callback);
   }
 
-  static showUpdateNilaiForm(rl, callback) {
+  static showNimPrompt(rl, callback) {
     rl.question("Masukkan NIM Mahasiswa: ", (nim) => {
+      callback(nim);
+    });
+  }
+
+  static showNilaiTable(kontrak) {
+    const table = new Table({
+      head: ['ID', 'Matakuliah', 'Nilai']
+    });
+
+    kontrak.forEach(k => {
+      table.push([
+        k.id,
+        k.nama_mk,
+        k.nilai || 'Belum ada nilai'
+      ]);
+    });
+
+    console.log("\nDaftar Kontrak Kuliah:");
+    console.log(table.toString());
+  }
+
+  static showUpdateNilaiForm(rl, callback) {
+    rl.question("Masukkan ID yang akan diubah: ", (id) => {
       rl.question("Masukkan Nilai (A/A+/A++/B/B+/C/C+/D/D+/E): ", (nilai) => {
-        callback({ nim, nilai });
+        callback({ id, nilai });
       });
     });
   }

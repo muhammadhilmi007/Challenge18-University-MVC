@@ -26,9 +26,9 @@ class JurusanView {
     console.log(table.toString());
   }
 
-  static showDetail(jurusan) {
+  static showDetail(jurusan, kode) {
     if (!jurusan) {
-      console.log(`Jurusan dengan Kode ${jurusan} tidak ditemukan`);
+      console.log(`Jurusan dengan Kode ${kode} tidak ditemukan`);
       return;
     }
     console.log("=======================================");
@@ -41,8 +41,21 @@ class JurusanView {
     rl.question("Masukkan kode Jurusan: ", callback);
   }
 
-  static showTambahJurusan(rl, callback) {
-    console.log("Input Data Jurusan Baru:");
+  static showTambahJurusan(rl, callback, jurusanList) {
+    console.log("Lengkapi data dibawah ini:");
+
+    const table = new Table({
+      head: ["Kode Jurusan", "Nama Jurusan"],
+    });
+
+    jurusanList.forEach((jurusan) => {
+      table.push([jurusan.id_jurusan, jurusan.nama_jurusan]);
+    });
+
+    console.log("Daftar Jurusan yang sudah terdaftar:");
+    console.log(table.toString());
+    console.log("\n");
+
     rl.question("Kode Jurusan: ", (id_jurusan) => {
       rl.question("Nama Jurusan: ", (nama_jurusan) => {
         callback({

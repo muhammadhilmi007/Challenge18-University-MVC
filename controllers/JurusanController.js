@@ -51,41 +51,36 @@ class JurusanController {
           console.log(err);
           return this.show();
         }
-        JurusanView.showDetail(jurusan);
+        JurusanView.showDetail(jurusan, kode);
         this.show();
       });
     });
   }
 
   tambahJurusan() {
-    JurusanView.showTambahJurusan(this.rl, (jurusanData) => {
-      // Cek Kode Jurusan Duplikat
-      Jurusan.checkKodeJurusanExists(
-        jurusanData.kode,
-        (err, existingJurusan) => {
-          if (err) {
-            console.log(err);
-            return this.show();
-          }
+    Jurusan.getAll((err, jurusanList) => {
+      if (err) {
+        console.log(err);
+        return this.show();
+      }
+      JurusanView.showTambahJurusan(
+        this.rl,
+        (jurusanData) => {
+          // Cek Kode Jurusan Duplikat
+          Jurusan.checkKodeJurusanExists(
+            jurusanData.kode,
+            (err, existingJurusan) => {
+              if (err) {
+                console.log(err);
+                return this.show();
+              }
 
-          if (existingJurusan) {
-            console.log(
-              "Kode Jurusan sudah terdaftar! Silahkan gunakan Kode Jurusan lain."
-            );
-            return this.tambahJurusan();
-          }
-
-          // Ambil Daftar Jurusan untuk Validasi
-          Jurusan.getAll((err, jurusan) => {
-            if (err) {
-              console.log(err);
-              return this.show();
-            }
-
-            JurusanView.showDaftarJurusan(jurusan);
-            JurusanView.ShowJurusanPrompt(this.rl, (kode) => {
-              jurusanData.kode = kode;
-
+              if (existingJurusan) {
+                console.log(
+                  "Kode Jurusan sudah terdaftar! Silahkan gunakan Kode Jurusan lain."
+                );
+                return this.tambahJurusan();
+              }
               Jurusan.createJurusan(jurusanData, (err) => {
                 if (err) {
                   console.log(err);
@@ -94,9 +89,10 @@ class JurusanController {
                 console.log("Jurusan telah ditambahkan ke dalam database");
                 this.listJurusan();
               });
-            });
-          });
-        }
+            }
+          );
+        },
+        jurusanList
       );
     });
   }

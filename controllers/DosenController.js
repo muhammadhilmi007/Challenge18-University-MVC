@@ -51,36 +51,34 @@ class DosenController {
           console.log(err);
           return this.show();
         }
-        DosenView.showDetailDosen(dosen);
+        DosenView.showDetailDosen(dosen, nip);
         this.show();
       });
     });
   }
 
   tambahDosen() {
-    DosenView.showTambahDosen(this.rl, (dosenData) => {
-      // Cek NIP duplikat
-      Dosen.checkNIPExists(dosenData.nip, (err, existingDosen) => {
-        if (err) {
-          console.log(err);
-          return this.show();
-        }
+    // Ambil daftar dosen untuk validasi
+    Dosen.getAll((err, dosen) => {
+      if (err) {
+        console.log(err);
+        return this.show();
+      }
 
-        if (existingDosen) {
-          console.log("NIP sudah terdaftar! Silahkan gunakan NIP lain.");
-          return this.tambahDosen();
-        }
+      DosenView.showTambahDosen(
+        this.rl,
+        (dosenData) => {
+          // Cek NIP duplikat
+          Dosen.checkNIPExists(dosenData.nip, (err, existingDosen) => {
+            if (err) {
+              console.log(err);
+              return this.show();
+            }
 
-        // Ambil daftar dosen untuk validasi
-        Dosen.getAll((err, dosen) => {
-          if (err) {
-            console.log(err);
-            return this.show();
-          }
-
-          DosenView.showDosenDaftar(dosen);
-          DosenView.showDosenPrompt(this.rl, (kodeDosen) => {
-            dosenData.nip = kodeDosen;
+            if (existingDosen) {
+              console.log("NIP sudah terdaftar! Silahkan gunakan NIP lain.");
+              return this.tambahDosen();
+            }
 
             Dosen.createDosen(dosenData, (err) => {
               if (err) {
@@ -91,8 +89,9 @@ class DosenController {
               this.listDosen();
             });
           });
-        });
-      });
+        },
+        dosen
+      );
     });
   }
 

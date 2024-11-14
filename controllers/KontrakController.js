@@ -56,13 +56,14 @@ class KontrakController {
           console.log(err);
           return this.show();
         }
-        KontrakView.showDetail(kontrak);
+        KontrakView.showDetail(kontrak, nim);
         this.show();
       });
     });
   }
 
   tambahKontrak() {
+    console.log("Lengkapi data dibawah ini:");
     // Tampilkan daftar kontrak yang ada
     Kontrak.getAll((err, kontrak) => {
       if (err) {
@@ -160,21 +161,41 @@ class KontrakController {
       }
       KontrakView.showList(kontrak);
 
-      KontrakView.showUpdateNilaiForm(this.rl, (data) => {
-        const validNilai = ["A", "A+", "A++", "B", "B+", "C", "C+", "D", "D+", "E"];
-        
+      KontrakView.showNimPrompt(this.rl, (nim) => {
+        // Ambil data kontrak berdasarkan NIM
+        Kontrak.getByNIM(nim, (err, kontrak) => {
+          if (err) {
+            console.log(err);
+            return this.show();
+          }
+
+          if (!kontrak || kontrak.length === 0) {
+            console.log("Data kontrak tidak ditemukan untuk NIM ini");
+            return this.show();
+          }
+
+          // Tampilkan data kontrak
+          KontrakView.showNilaiTable(kontrak);
+
+          // Prompt untuk ID dan nilai baru
+          KontrakView.showUpdateNilaiForm(this.rl, (data) => {
+            const validNilai = ["A", "A+", "A++", "B", "B+", "C", "C+", "D", "D+", "E"];
+            
         if (!validNilai.includes(data.nilai.toUpperCase())) {
           console.log("Nilai tidak valid! Gunakan (A/A+/A++/B/B+/C/C+/D/D+/E)");
           return this.show();
         }
 
-        Kontrak.updateNilai(data.nim, data.nilai, (err) => {
+        // Update nilai berdasarkan ID
+        Kontrak.updateNilaiByID(data.id, data.nilai, (err) => {
           if (err) {
             console.log(err);
             return this.show();
           }
-          console.log("Nilai berhasil diupdate");
-          this.listKontrak();
+            console.log("Nilai berhasil diupdate");
+            this.listKontrak();
+          });
+        });
         });
       });
     });

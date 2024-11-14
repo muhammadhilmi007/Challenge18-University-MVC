@@ -17,6 +17,7 @@ const rl = readline.createInterface({
 class UniversityApp {
   constructor() {
     this.currentUser = null;
+    this.authController = new AuthController(rl);
   }
 
   start() {
@@ -24,21 +25,19 @@ class UniversityApp {
   }
 
   login() {
-    AuthView.showLoginPrompt(rl, (username, password) => {
-      AuthController.login(username, password, (err, user) => {
-        if (err) {
-          console.log("Terjadi kesalahan saat login");
-          this.login();
-          return;
-        }
+    this.authController.login((err, user) => {
+      if (err) {
+        console.log("Terjadi kesalahan saat login");
+        this.login();
+        return;
+      }
 
-        if (user) {
-          this.currentUser = user;
-          this.showMainMenu();
-        } else {
-          this.login();
-        }
-      });
+      if (user) {
+        this.currentUser = user;
+        this.showMainMenu();
+      } else {
+        this.login();
+      }
     });
   }
 

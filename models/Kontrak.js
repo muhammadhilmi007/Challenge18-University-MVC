@@ -39,10 +39,10 @@ class Kontrak {
     db.run("DELETE FROM kontrak WHERE id = ?", [id], callback);
   }
 
-  static updateNilai(nim, nilai, callback) {
+  static updateNilaiByID(id, nilai, callback) {
     db.run(
-      "UPDATE kontrak SET nilai = ? WHERE nim = ?",
-      [nilai.toUpperCase(), nim],
+      "UPDATE kontrak SET nilai = ? WHERE id = ?",
+      [nilai.toUpperCase(), id],
       callback
     );
   }

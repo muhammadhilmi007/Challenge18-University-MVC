@@ -16,7 +16,7 @@ class MatakuliahView {
 
   static showListMatakuliah(matakuliahList) {
     const table = new Table({
-      head: ["Kode MK", "Nama Matakuliah", "SKS"],
+      head: ["Kode MK", "Nama Matakuliah", "SKS"]
     });
 
     matakuliahList.forEach((row) => {
@@ -26,11 +26,9 @@ class MatakuliahView {
     console.log(table.toString());
   }
 
-  static showDetailMatakuliah(matakuliah) {
+  static showDetailMatakuliah(matakuliah, kode) {
     if (!matakuliah) {
-      console.log(
-        `Matakuliah dengan kode ${matakuliah.kode_mk} tidak ditemukan`
-      );
+      console.log(`Matakuliah dengan kode ${kode} tidak ditemukan`);
       return;
     }
     console.log("===================================");
@@ -44,15 +42,18 @@ class MatakuliahView {
     rl.question("Masukkan Kode Matakuliah: ", callback);
   }
 
-  static showTambahMatakuliah(rl, callback) {
-    console.log("Input Data Matakuliah:");
+  static showTambahMatakuliah(rl, callback, matakuliahList) {
+    console.log("Lengkapi data dibawah ini:");
+
+    this.showDaftarMatakuliah(matakuliahList);
+
     rl.question("Kode Matakuliah: ", (kode_mk) => {
       rl.question("Nama Matakuliah: ", (nama_mk) => {
         rl.question("SKS: ", (sks) => {
           callback({
             kode_mk,
             nama_mk,
-            sks,
+            sks
           });
         });
       });
@@ -61,15 +62,17 @@ class MatakuliahView {
 
   static showDaftarMatakuliah(matakuliahList) {
     const table = new Table({
-      head: ["Kode MK", "Nama Matakuliah", "SKS"],
+      head: ["Kode MK", "Nama Matakuliah", "SKS"]
     });
 
     matakuliahList.forEach((row) => {
       table.push([row.kode_mk, row.nama_mk, row.sks]);
     });
 
+    console.log("\n");
     console.log("Daftar Matakuliah:");
     console.log(table.toString());
+    console.log("\n");
   }
 
   static showMatakuliahPrompt(rl, callback) {

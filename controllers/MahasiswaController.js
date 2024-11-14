@@ -51,49 +51,66 @@ class MahasiswaController {
           console.log(err);
           return this.show();
         }
-        MahasiswaView.showDetail(mahasiswa);
+        MahasiswaView.showDetail(mahasiswa, nim);
         this.show();
       });
     });
   }
 
   tambahMahasiswa() {
-    MahasiswaView.showAddForm(this.rl, (mahasiswaData) => {
-      // Cek NIM duplikat
-      Mahasiswa.checkNIMExists(mahasiswaData.nim, (err, existingMahasiswa) => {
-        if (err) {
-          console.log(err);
-          return this.show();
-        }
+    // Ambil Daftar Mahasiswa yang sudah terdaftar
+    Mahasiswa.getAll((err, mahasiswaList) => {
+      if (err) {
+        console.log(err);
+        return this.show();
+      }
 
-        if (existingMahasiswa) {
-          console.log("NIM sudah terdaftar! Silahkan gunakan NIM lain.");
-          return this.tambahMahasiswa();
-        }
-
-        // Ambil daftar jurusan untuk validasi
-        Jurusan.getAll((err, jurusan) => {
-          if (err) {
-            console.log(err);
-            return this.show();
-          }
-
-          MahasiswaView.showJurusanList(jurusan);
-
-          MahasiswaView.showJurusanPrompt(this.rl, (kodeJurusan) => {
-            mahasiswaData.id_jurusan = kodeJurusan;
-
-            Mahasiswa.create(mahasiswaData, (err) => {
+      MahasiswaView.showAddForm(
+        this.rl,
+        (mahasiswaData) => {
+          // Cek NIM duplikat
+          Mahasiswa.checkNIMExists(
+            mahasiswaData.nim,
+            (err, existingMahasiswa) => {
               if (err) {
                 console.log(err);
                 return this.show();
               }
-              console.log("Mahasiswa telah ditambahkan ke dalam database");
-              this.listMahasiswa();
-            });
-          });
-        });
-      });
+
+              if (existingMahasiswa) {
+                console.log("NIM sudah terdaftar! Silahkan gunakan NIM lain.");
+                return this.tambahMahasiswa();
+              }
+
+              // Ambil daftar jurusan untuk validasi
+              Jurusan.getAll((err, jurusan) => {
+                if (err) {
+                  console.log(err);
+                  return this.show();
+                }
+
+                MahasiswaView.showJurusanList(jurusan);
+
+                MahasiswaView.showJurusanPrompt(this.rl, (kodeJurusan) => {
+                  mahasiswaData.id_jurusan = kodeJurusan;
+
+                  Mahasiswa.create(mahasiswaData, (err) => {
+                    if (err) {
+                      console.log(err);
+                      return this.show();
+                    }
+                    console.log(
+                      "Mahasiswa telah ditambahkan ke dalam database"
+                    );
+                    this.listMahasiswa();
+                  });
+                });
+              });
+            }
+          );
+        },
+        mahasiswaList
+      );
     });
   }
 

@@ -51,53 +51,48 @@ class MatakuliahController {
           console.log(err);
           return this.show();
         }
-        MatakuliahView.showDetailMatakuliah(matakuliah);
+        MatakuliahView.showDetailMatakuliah(matakuliah, kode);
         this.show();
       });
     });
   }
 
   tambahMatakuliah() {
-    MatakuliahView.showTambahMatakuliah(this.rl, (matakuliahData) => {
-      // Cek Kode MK duplikat
-      Matakuliah.checkKodeMKExists(
-        matakuliahData.nim,
-        (err, existingMatakuliah) => {
-          if (err) {
-            console.log(err);
-            return this.show();
-          }
+    // Ambil daftar matakuliah untuk validasi
+    Matakuliah.getAll((err, matakuliah) => {
+      if (err) {
+        console.log(err);
+        return this.show();
+      }
 
-          if (existingMatakuliah) {
-            console.log(
-              "Kode Matakuliah sudah terdaftar! Silahkan gunakan Kode Matakuliah lain."
-            );
-            return this.tambahMatakuliah();
-          }
-
-          // Ambil daftar matakuliah untuk validasi
-          Matakuliah.getAll((err, matakuliah) => {
+      MatakuliahView.showTambahMatakuliah(this.rl, (matakuliahData) => {
+        // Cek Kode MK duplikat
+        Matakuliah.checkKodeMKExists(
+          matakuliahData.nim,
+          (err, existingMatakuliah) => {
             if (err) {
               console.log(err);
               return this.show();
             }
 
-            MatakuliahView.showListMatakuliah(matakuliah);
-            MatakuliahView.showMatakuliahPrompt(this.rl, (kodeMK) => {
-              matakuliahData.kode_mk = kodeMK;
+            if (existingMatakuliah) {
+              console.log(
+                "Kode Matakuliah sudah terdaftar! Silahkan gunakan Kode Matakuliah lain."
+              );
+              return this.tambahMatakuliah();
+            }
 
-              Matakuliah.createMatakuliah(matakuliahData, (err) => {
-                if (err) {
-                  console.log(err);
-                  return this.show();
-                }
-                console.log("Matakuliah telah ditambahkan ke dalam database.");
-                this.listMatakuliah();
-              });
+            Matakuliah.createMatakuliah(matakuliahData, (err) => {
+              if (err) {
+                console.log(err);
+                return this.show();
+              }
+              console.log("Matakuliah telah ditambahkan ke dalam database.");
+              this.listMatakuliah();
             });
-          });
-        }
-      );
+          }
+        );
+      }, matakuliah);
     });
   }
 
