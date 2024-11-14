@@ -1,0 +1,15 @@
+{
+  "name": "universityapp",
+  "version": "1.0.0",
+  "description": "Aplikasi Universitas CLI",
+  "main": "UniversityApp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muhammad Hilmi",
+  "license": "ISC",
+  "dependencies": {
+    "cli-table3": "^0.6.5",
+    "sqlite3": "^5.1.7"
+  }
+}
